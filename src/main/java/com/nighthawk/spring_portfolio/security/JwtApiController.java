@@ -23,7 +23,8 @@ import com.nighthawk.spring_portfolio.mvc.person.Person;
 import com.nighthawk.spring_portfolio.mvc.person.PersonDetailsService;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "https://dnhschess.github.io/")
+//@CrossOrigin(origins = "http://127.0.0.1:4200/")
 public class JwtApiController {
 
 	@Autowired
@@ -43,8 +44,8 @@ public class JwtApiController {
 
 		// Get the roles of the user
 		List<String> roles = userDetails.getAuthorities().stream()
-			.map(GrantedAuthority::getAuthority)
-			.collect(Collectors.toList());
+				.map(GrantedAuthority::getAuthority)
+				.collect(Collectors.toList());
 
 		// Generate the token with the roles
 		final String token = jwtTokenUtil.generateToken(userDetails, roles);
@@ -54,14 +55,15 @@ public class JwtApiController {
 		}
 
 		final ResponseCookie tokenCookie = ResponseCookie.from("jwt_java_spring", token)
-			.httpOnly(true)
-			.secure(true)
-			.path("/")
-			.maxAge(3600)
-			.sameSite("None; Secure")
-			.build();
+				.httpOnly(true)
+				.secure(true)
+				.path("/")
+				.maxAge(3600)
+				.sameSite("None; Secure")
+				.build();
 
-		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, tokenCookie.toString()).body(authenticationRequest.getEmail() + " was authenticated successfully");
+		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, tokenCookie.toString())
+				.body(authenticationRequest.getEmail() + " was authenticated successfully");
 	}
 
 	private void authenticate(String username, String password) throws Exception {
