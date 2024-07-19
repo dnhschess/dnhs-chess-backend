@@ -5,6 +5,10 @@ public class Player {
     private int divisionNumber; // This represents the division numbers (1 and 2)
     private int score;
 
+    public Player() {
+        // Default constructor needed for JSON mapping
+    }
+
     public Player(String Name, int DivisionNumber, int Score) {
         this.name = Name;
         this.divisionNumber = DivisionNumber;
