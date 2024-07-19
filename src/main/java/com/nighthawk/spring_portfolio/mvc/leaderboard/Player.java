@@ -5,10 +5,15 @@ public class Player {
     private int divisionNumber; // This represents the division numbers (1 and 2)
     private int score;
 
-    public Player(String name, int divisionNumber, int score) {
-        this.name = name;
-        this.divisionNumber = divisionNumber;
-        this.score = score;
+    public Player(String Name, int DivisionNumber, int Score) {
+        this.name = Name;
+        this.divisionNumber = DivisionNumber;
+        this.score = Score;
+    }
+
+    public Player(String Name, int DivisionNumber) {
+        this.name = Name;
+        this.divisionNumber = DivisionNumber;
     }
 
     public String getName() {
