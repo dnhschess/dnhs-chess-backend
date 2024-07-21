@@ -3,26 +3,17 @@ package com.nighthawk.spring_portfolio.mvc.leaderboard;
 import java.util.ArrayList;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @RestController
 @CrossOrigin(origins = "http://127.0.0.1:4200/")
 @RequestMapping("/leaderboard")
 public class LeaderBoardController {
-    private ArrayList<Player> players = new ArrayList<>();
-    private static final Logger logger = LoggerFactory.getLogger(LeaderBoardController.class);
+    private ArrayList<Player> players = new ArrayList<Player>();
 
     @PostMapping("/add")
     public ResponseEntity<String> addPlayer(@RequestBody Player player) {
-        try {
-            players.add(player);
-            logger.info("Player added: {}", player);
-            return ResponseEntity.ok("Player added successfully");
-        } catch (Exception e) {
-            logger.error("Error adding player", e);
-            return ResponseEntity.status(500).body("Error adding player");
-        }
+        players.add(player);
+        return ResponseEntity.ok("Player added successfully");
     }
 
     @GetMapping("/allPlayers")
@@ -44,5 +35,38 @@ public class LeaderBoardController {
     public ResponseEntity<String> removeAllPlayers() {
         players.clear();
         return ResponseEntity.ok("All players removed successfully");
+    }
+
+    @PatchMapping("/updateScore")
+    public ResponseEntity<String> updateScore(@RequestBody ScoreUpdateRequest request) {
+        for (Player player : players) {
+            if (player.getName().equals(request.getName())) {
+                player.setScore(player.getScore() + request.getPoints());
+                return ResponseEntity.ok("Score updated successfully");
+            }
+        }
+        return ResponseEntity.status(404).body("Player not found");
+    }
+}
+
+class ScoreUpdateRequest {
+    private String name;
+    private int points;
+
+    // Getters and setters
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
     }
 }
