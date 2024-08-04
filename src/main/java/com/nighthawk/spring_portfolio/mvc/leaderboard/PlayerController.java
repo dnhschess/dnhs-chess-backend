@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = {
@@ -71,6 +73,67 @@ public class PlayerController {
             }
         }
         return ResponseEntity.status(404).body("Player not found");
+    }
+
+    @GetMapping("/pairPlayers")
+    public ResponseEntity<List<Pair>> pairPlayers() {
+        List<Pair> pairs = new ArrayList<>();
+        pairs.addAll(pairPlayersInDivision(division1));
+        pairs.addAll(pairPlayersInDivision(division2));
+        return ResponseEntity.ok(pairs);
+    }
+
+    private List<Pair> pairPlayersInDivision(List<Player> division) {
+        List<Pair> pairs = new ArrayList<>();
+        List<Player> unpairedPlayers = new ArrayList<>(division);
+
+        while (unpairedPlayers.size() > 1) {
+            Player player1 = unpairedPlayers.remove(0);
+            Player bestMatch = null;
+            int minScoreDifference = Integer.MAX_VALUE;
+
+            for (Player player2 : unpairedPlayers) {
+                int scoreDifference = Math.abs(player1.getScore() - player2.getScore());
+                if (scoreDifference < minScoreDifference) {
+                    minScoreDifference = scoreDifference;
+                    bestMatch = player2;
+                }
+            }
+
+            if (bestMatch != null) {
+                unpairedPlayers.remove(bestMatch);
+                pairs.add(new Pair(player1, bestMatch));
+            }
+        }
+
+        return pairs;
+    }
+}
+
+class Pair {
+    private Player player1;
+    private Player player2;
+
+    public Pair(Player player1, Player player2) {
+        this.player1 = player1;
+        this.player2 = player2;
+    }
+
+    // Getters and setters
+    public Player getPlayer1() {
+        return player1;
+    }
+
+    public void setPlayer1(Player player1) {
+        this.player1 = player1;
+    }
+
+    public Player getPlayer2() {
+        return player2;
+    }
+
+    public void setPlayer2(Player player2) {
+        this.player2 = player2;
     }
 }
 
